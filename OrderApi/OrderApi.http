@@ -14,7 +14,7 @@ Content-Type: application/json
     },
     {
       "productName": "Adidas Samba",
-      "quantity": 1,
+      "quantity": 5,
       "price": 79.99
     }
   ]

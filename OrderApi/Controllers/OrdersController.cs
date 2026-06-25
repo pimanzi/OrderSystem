@@ -35,10 +35,10 @@ public class OrdersController : ControllerBase
     }
 
     [HttpPost]
-    public ActionResult<Order> Create(
+    public async Task<ActionResult<Order>> Create(
         [FromBody] CreateOrderDto request)
     {
-        var order = _orderService.CreateOrder(
+        var order = await _orderService.CreateOrder(
             request.CustomerName,
             request.Items);
 
@@ -49,23 +49,20 @@ public class OrdersController : ControllerBase
     }
 
     [HttpPut("{id}/confirm")]
-    public ActionResult Confirm(string id)
+    public async Task<ActionResult> Confirm(string id)
     {
         var (success, error) =
-            _orderService.ConfirmOrder(id);
-
+            await _orderService.ConfirmOrder(id);
         if (!success)
             return BadRequest(error);
 
         return Ok($"Order {id} confirmed!");
     }
-
     [HttpPut("{id}/ship")]
-    public ActionResult Ship(string id)
+    public async Task<ActionResult> Ship(string id)
     {
         var (success, error) =
-            _orderService.ShipOrder(id);
-
+            await _orderService.ShipOrder(id);
         if (!success)
             return BadRequest(error);
 
