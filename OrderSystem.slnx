@@ -1,5 +1,5 @@
 <Solution>
-  <Project Path="InventoryService/InventoryService.csproj" />
   <Project Path="NotificationService/NotificationService.csproj" />
   <Project Path="OrderApi/OrderApi.csproj" />
+  <Project Path="Shared.Events/Shared.Events.csproj" />
 </Solution>
