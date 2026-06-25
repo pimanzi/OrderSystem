@@ -1,20 +1,24 @@
 using OrderApi.Enums;
 using OrderApi.Models;
+using OrderApi.Publishers.Interfaces;
 using OrderApi.Repository;
 using OrderApi.Services.Interfaces;
+using Shared.Events;
 
 namespace OrderApi.Services;
 
 public class OrderService : IOrderService
 {
     private readonly OrderStore _store;
+    private readonly IEventPublisher _publisher;
 
-    public OrderService(OrderStore store)
+    public OrderService(OrderStore store, IEventPublisher publisher)
     {
         _store = store;
+        _publisher = publisher;
     }
 
-    public Order CreateOrder(string customer,
+    public async  Task<Order> CreateOrder(string customer,
         List<OrderItem> items)
     {
         var order = new Order
@@ -26,6 +30,23 @@ public class OrderService : IOrderService
         };
 
         _store.Add(order);
+        await _publisher.PublishAsync(
+            "order-events",
+            new OrderPlacedEvent()
+            {
+                OrderId = order.Id,
+                CustomerName = order.CustomerName,
+                Items = order.Items.Select(i =>
+                    new OrderItemEvent
+                    {
+                        ProductName = i.ProductName,
+                        Quantity = i.Quantity,
+                        Price = i.Price
+                    }).ToList(),
+                TotalAmount = order.TotalAmount
+            });
+            
+            
         return order;
     }
 

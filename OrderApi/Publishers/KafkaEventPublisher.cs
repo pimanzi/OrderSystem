@@ -1,6 +1,7 @@
 using Confluent.Kafka;
 using OrderApi.Publishers.Interfaces;
 using System.Text.Json;
+using OrderApi.Settings;
 
 namespace OrderApi.Publishers;
 
@@ -8,6 +9,7 @@ public class KafkaEventPublisher : IEventPublisher
 {
     private readonly IProducer<string, string> _producer;
     private readonly ILogger<KafkaEventPublisher> _logger;
+    private readonly KafkaSettings _settings;
 
     public KafkaEventPublisher(
         ILogger<KafkaEventPublisher> logger)
@@ -16,7 +18,7 @@ public class KafkaEventPublisher : IEventPublisher
 
         var config = new ProducerConfig
         {
-            BootstrapServers = "localhost:9092",
+            BootstrapServers = _settings.BootstrapServers,
             Acks = Acks.All
         };
 
