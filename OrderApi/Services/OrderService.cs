@@ -50,7 +50,7 @@ public class OrderService : IOrderService
         return order;
     }
 
-    public (bool Success, string? Error) ConfirmOrder(string id)
+    public async Task<(bool Success, string? Error)> ConfirmOrder(string id)
     {
         var order = _store.GetById(id);
 
@@ -64,10 +64,19 @@ public class OrderService : IOrderService
 
         order.Status = OrderStatus.Confirmed;
         _store.Update(order);
+
+        await _publisher.PublishAsync("order-events",
+            new OrderConfirmedEvent()
+            {
+                OrderId = order.Id,
+                CustomerName = order.CustomerName
+            }
+
+        );
         return (true, null);
     }
 
-    public (bool Success, string? Error) ShipOrder(string id)
+    public async Task<(bool Success, string? Error)>ShipOrder(string id)
     {
         var order = _store.GetById(id);
 
@@ -81,6 +90,14 @@ public class OrderService : IOrderService
 
         order.Status = OrderStatus.Shipped;
         _store.Update(order);
+
+        await _publisher.PublishAsync("order-events",
+            new OrderShippedEvent()
+            {
+                OrderId = order.Id,
+                CustomerName = order.CustomerName,
+                TrackingNumber = GenerateTrackingNumber()
+            });
         return (true, null);
     }
 
@@ -89,4 +106,11 @@ public class OrderService : IOrderService
 
     public List<Order> GetAll()
         => _store.GetAll();
+    
+    private string GenerateTrackingNumber()
+    {
+        return "TRK-" + Guid.NewGuid()
+            .ToString()[..8]
+            .ToUpper();
+    }
 }

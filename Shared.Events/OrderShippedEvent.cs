@@ -8,6 +8,6 @@ public class OrderShippedEvent : BaseEvent
     }
 
     public string OrderId { get; set; } = string.Empty;
-    public string CustomerName { get; set; } = string.Empty
+    public string CustomerName { get; set; } = string.Empty;
     public string TrackingNumber { get; set; } = string.Empty;
 }

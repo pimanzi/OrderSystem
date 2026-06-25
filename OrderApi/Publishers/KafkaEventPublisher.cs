@@ -1,6 +1,7 @@
 using Confluent.Kafka;
 using OrderApi.Publishers.Interfaces;
 using System.Text.Json;
+using Microsoft.Extensions.Options;
 using OrderApi.Settings;
 
 namespace OrderApi.Publishers;
@@ -12,9 +13,11 @@ public class KafkaEventPublisher : IEventPublisher
     private readonly KafkaSettings _settings;
 
     public KafkaEventPublisher(
-        ILogger<KafkaEventPublisher> logger)
+        ILogger<KafkaEventPublisher> logger, IOptions<KafkaSettings> settings
+    )
     {
         _logger = logger;
+        _settings = settings.Value;
 
         var config = new ProducerConfig
         {
