@@ -1,0 +1,33 @@
+@OrderApi_HostAddress = http://localhost:5062
+
+### Create Order
+POST {{OrderApi_HostAddress}}/api/orders
+Content-Type: application/json
+
+{
+  "customerName": "Placide",
+  "items": [
+    {
+      "productName": "Nike Air Max",
+      "quantity": 2,
+      "price": 99.99
+    },
+    {
+      "productName": "Adidas Samba",
+      "quantity": 1,
+      "price": 79.99
+    }
+  ]
+}
+
+### Get All Orders
+GET {{OrderApi_HostAddress}}/api/orders
+
+### Get Order By Id (replace with actual id)
+GET {{OrderApi_HostAddress}}/api/orders/{id}
+
+### Confirm Order (replace with actual id)
+PUT {{OrderApi_HostAddress}}/api/orders/{id}/confirm
+
+### Ship Order (replace with actual id)
+PUT {{OrderApi_HostAddress}}/api/orders/{id}/ship
